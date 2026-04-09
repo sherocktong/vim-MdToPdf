@@ -1,15 +1,238 @@
-/*Import Microsoft's Markdown styling for VS Code*/
-@import url("https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css");
+/*Import syntax highlight base*/
 @import url("https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css");
 
-/*Set PDF settings*/
+/*PDF page settings*/
 @page {
     size: letter;
-    margin: 0.5in;
+    margin: 0.85in 1in;
 }
 
-/*Set default font*/
+/*Base*/
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
-	font-family: sans-serif;
+    font-family: 'Palatino', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+    font-size: 10.5pt;
+    line-height: 1.8;
+    color: #2a2a2a;
+    background: #ffffff;
+    max-width: 100%;
+}
+
+/*Headings*/
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Didot', 'Bodoni MT', 'Georgia', serif;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-top: 1.6em;
+    margin-bottom: 0.45em;
+    color: #1a1a1a;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+    letter-spacing: 0.02em;
+    padding-bottom: 0.2em;
+    margin-top: 0.2em;
+    margin-bottom: 0.8em;
+    position: relative;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    margin: 0.3em auto 0;
+    width: 3.5em;
+    height: 2px;
+    background: #999999;
+    border-radius: 2px;
+}
+
+h2 {
+    font-size: 1.45em;
+    border-bottom: 1px solid #d8d8d8;
+    padding-bottom: 0.2em;
+    color: #1a1a1a;
+}
+
+h3 {
+    font-size: 1.15em;
+    font-style: italic;
+    color: #444444;
+}
+
+h4, h5, h6 {
+    font-size: 1em;
+    color: #555555;
+    font-family: 'Optima', 'Gill Sans', 'Helvetica Neue', sans-serif;
+}
+
+/*Paragraphs*/
+p {
+    margin: 0.65em 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/*Links*/
+a {
+    color: #333333;
+    text-decoration: underline;
+}
+
+/*Inline code*/
+code {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 0.82em;
+    background: #f4f4f4;
+    color: #333333;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/*Hide pandoc's per-line anchor elements — WeasyPrint renders them as _ characters*/
+pre code a[aria-hidden="true"] {
+    display: none;
+}
+
+/*Suppress any pseudo-element content injected by highlight.css inside code blocks*/
+pre *::before, pre *::after {
+    content: none !important;
+}
+
+/*Block code*/
+pre {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 0.8em;
+    background: #f6f6f6;
+    color: #2a2a2a;
+    border: 1px solid #dedede;
+    border-left: 3px solid #888888;
+    border-radius: 0 6px 6px 0;
+    padding: 1em 1.2em;
+    margin: 1.3em 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.65;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/*Blockquote*/
+blockquote {
+    margin: 1.3em 0;
+    padding: 0.75em 1.2em;
+    border-left: 3px solid #aaaaaa;
+    background: #f9f9f9;
+    border-radius: 0 6px 6px 0;
+    color: #555555;
+    font-style: italic;
+    font-family: 'Didot', Georgia, serif;
+}
+
+blockquote p {
+    margin: 0;
+}
+
+/*Tables*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.3em 0;
+    font-size: 0.9em;
+    font-family: 'Optima', 'Gill Sans', 'Helvetica Neue', sans-serif;
+}
+
+thead tr {
+    background: #2b2b2b;
+    color: #ffffff;
+}
+
+th {
+    padding: 0.6em 0.9em;
+    font-weight: bold;
+    text-align: left;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+td {
+    padding: 0.55em 0.9em;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+tbody tr:nth-child(even) {
+    background: #f7f7f7;
+}
+
+tbody tr:last-child td {
+    border-bottom: 2px solid #888888;
+}
+
+/*Horizontal rule*/
+hr {
+    border: none;
+    text-align: center;
+    margin: 1.8em 0;
+}
+
+hr::before {
+    content: '· · ·';
+    font-size: 1.4em;
+    letter-spacing: 0.5em;
+    color: #aaaaaa;
+}
+
+/*Lists*/
+ul, ol {
+    padding-left: 1.8em;
+    margin: 0.5em 0;
+}
+
+li {
+    margin: 0.3em 0;
+}
+
+ul li::marker {
+    color: #888888;
+}
+
+ol li::marker {
+    color: #888888;
+    font-weight: bold;
+    font-family: 'Optima', sans-serif;
+}
+
+/*Images*/
+img {
+    max-width: 100%;
+    border-radius: 6px;
+    display: block;
+    margin: 0.8em auto;
+}
+
+/*Strong and emphasis*/
+strong {
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+em {
+    font-style: italic;
+    color: #444444;
 }
