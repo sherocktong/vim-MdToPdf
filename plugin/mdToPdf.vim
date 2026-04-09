@@ -5,6 +5,17 @@ endif
 
 let s:vim_mdtopdf_html_includes_path = "'". shellescape("file://". expand('<sfile>:p:h:h'). "/". "html-includes/includes.html"). "'"
 
+function! s:Progress(step, msg)
+    let l:total = 3
+    let l:width = 20
+    let l:filled = float2nr(round(l:width * a:step / l:total))
+    let l:arrow = a:step < l:total ? '>' : '='
+    let l:bar = '[' . repeat('=', max([l:filled - 1, 0])) . l:arrow . repeat(' ', l:width - l:filled) . ']'
+    let l:pct = printf('%3d%%', float2nr(round(100.0 * a:step / l:total)))
+    redraw
+    echo l:bar . ' ' . l:pct . ' ' . a:msg
+endfunction
+
 function! MdToPdf()
     " Check that Vim has been compiled with python3 support
     if !has('python3')
@@ -12,8 +23,9 @@ function! MdToPdf()
         finish
     endif
 
-    " Convert the markdown + math to html with KaTeX
+    " Convert the markdown + math to html with pandoc
     lcd %:p:h
+    call s:Progress(1, 'Converting Markdown to HTML...')
     let s:pandoc_cmd = "pandoc"
         \ . " -f gfm"
         \ . " --standalone"
@@ -42,6 +54,7 @@ html_path = "file://" + vim.eval("expand('%:p:r')") + ".html"
 pdf_path = vim.eval("expand('%:p:r')") + ".pdf"
 base_url = vim.eval("expand('%:p:h')")
 
+vim.command("call s:Progress(2, 'Rendering math...')")
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
@@ -75,6 +88,7 @@ for mjx in mjxs:
     mjx.replace(svg, svg_img)
 encoded_html = etree.tostring(root)
 
+vim.command("call s:Progress(3, 'Generating PDF...')")
 # Write the final, rendered HTML to a PDF file in the same directory as the Markdown file
 HTML(string = encoded_html, base_url = base_url).write_pdf(pdf_path)
 
@@ -83,4 +97,4 @@ os.remove(vim.eval("expand('%:p:r')") + ".html")
 EOF
 endfunction
 
-command MarkdownExportPDF call MdToPdf() | redraw! | echom "The PDF was built successfully."
+autocmd FileType markdown command! -buffer MarkdownExportPDF call MdToPdf() | redraw! | echom "The PDF was built successfully."
