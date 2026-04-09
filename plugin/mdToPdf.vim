@@ -4,6 +4,7 @@ if !exists("g:vim_mdtopdf_cssurl")
 endif
 
 let s:vim_mdtopdf_html_includes_path = "'". shellescape("file://". expand('<sfile>:p:h:h'). "/". "html-includes/includes.html"). "'"
+let s:vim_mdtopdf_root = expand('<sfile>:p:h:h')
 
 function! s:Progress(step, msg)
     let l:total = 3
@@ -41,8 +42,10 @@ function! MdToPdf()
 
     " Use playwright to render the TeX math using MathJax, then convert the rendered HTML to a PDF
 python3 << EOF
-import sys
-sys.path.insert(0, '/Users/kangtong/.vim/plugged/vim-MdToPdf/.venv/lib/python3.11/site-packages')
+import sys, glob, os
+_venv_packages = glob.glob(os.path.join(vim.eval("s:vim_mdtopdf_root"), ".venv", "lib", "python*", "site-packages"))
+if _venv_packages:
+    sys.path.insert(0, _venv_packages[0])
 from base64 import b64encode
 from lxml import etree
 import os
