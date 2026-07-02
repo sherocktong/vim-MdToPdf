@@ -236,3 +236,11 @@ em {
     font-style: italic;
     color: #444444;
 }
+
+/*Mermaid diagrams rendered as images for WeasyPrint*/
+.mermaid-output {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.3em auto;
+}
